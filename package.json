@@ -1,0 +1,51 @@
+{
+  "name": "start-vibe-project",
+  "version": "0.1.0",
+  "description": "Initialize a new project with AI-first documentation structure",
+  "type": "module",
+  "author": "itechmeat",
+  "license": "MIT",
+  "homepage": "https://github.com/itechmeat/start-vibe-project#readme",
+  "bin": {
+    "start-vibe-project": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "files",
+    "templates",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun run tsup src/index.ts --format esm --dts --clean",
+    "dev": "bun run src/index.ts",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "project-generator",
+    "ai-agents",
+    "vibe-coding",
+    "github-copilot",
+    "claude-code",
+    "agent-skills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itechmeat/start-vibe-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itechmeat/start-vibe-project/issues"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
