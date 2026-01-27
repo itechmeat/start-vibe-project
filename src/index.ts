@@ -214,12 +214,10 @@ program
       useReliefPilot,
     };
 
-    const spinner = p.spinner();
-    spinner.start('Creating project...');
-
     try {
+      p.log.info('Creating project...');
       await createProject(config, targetDir);
-      spinner.stop('Project created!');
+      p.log.success('Project created!');
 
       // Final message
       console.log();
@@ -235,7 +233,7 @@ program
 
       p.outro(chalk.dim('Happy coding! 🚀'));
     } catch (error) {
-      spinner.stop('Failed to create project');
+      p.log.error('Failed to create project');
       p.log.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       process.exit(1);
     }

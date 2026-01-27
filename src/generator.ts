@@ -1,9 +1,10 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { exec } from 'child_process';
 import type { ProjectConfig } from './templates.js';
 import { getAgentConfig, type AgentType } from './agents.js';
+import { getPrioritySkillSources } from './skill-sources.js';
 
 export async function createProject(config: ProjectConfig, targetDir: string): Promise<void> {
   // Create project directory
@@ -74,7 +75,7 @@ export async function createProject(config: ProjectConfig, targetDir: string): P
   const gitignoreContent = generateGitignore();
   await writeFile(join(targetDir, '.gitignore'), gitignoreContent);
 
-  // Install skills using add-skill CLI
+  // Install skills using skills CLI
   await installSkills(config, targetDir);
 }
 
@@ -592,9 +593,78 @@ async function loadFileAsset(relativePath: string): Promise<string> {
   }
 }
 
+function buildAddSkillCommand(sourceId: string, args: string[]): string {
+  return ['npx skills add', sourceId, ...args].join(' ');
+}
+
+type CommandError = NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+
+function runCommand(command: string, cwd: string): Promise<{ stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    exec(command, { cwd, maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
+      if (error) {
+        const execError = error as CommandError;
+        execError.stdout = stdout;
+        execError.stderr = stderr;
+        reject(execError);
+        return;
+      }
+
+      resolve({ stdout, stderr });
+    });
+  });
+}
+
+type SpinnerControls = {
+  stop: (finalMessage?: string) => void;
+};
+
+const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+function startSpinner(message: string): SpinnerControls {
+  if (!process.stdout.isTTY) {
+    console.log(message);
+    return {
+      stop: (finalMessage?: string) => {
+        if (finalMessage) {
+          console.log(finalMessage);
+        }
+      },
+    };
+  }
+
+  let frameIndex = 0;
+  let currentMessage = message;
+
+  const render = () => {
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+    process.stdout.write(`${SPINNER_FRAMES[frameIndex]} ${currentMessage}`);
+    frameIndex = (frameIndex + 1) % SPINNER_FRAMES.length;
+  };
+
+  render();
+  const timer = setInterval(render, 80);
+
+  return {
+    stop: (finalMessage?: string) => {
+      clearInterval(timer);
+      process.stdout.clearLine(0);
+      process.stdout.cursorTo(0);
+      console.log(finalMessage ?? currentMessage);
+    },
+  };
+}
+
 async function installSkills(config: ProjectConfig, targetDir: string): Promise<void> {
-  const baseCommand = [
-    'npx add-skill itechmeat/llm-code',
+  const prioritySources = getPrioritySkillSources();
+  const primarySource = prioritySources[0];
+
+  if (!primarySource) {
+    throw new Error('No priority skill sources configured');
+  }
+
+  const baseCommand = buildAddSkillCommand(primarySource.id, [
     `-a ${config.aiTool}`,
     '-s commits',
     '-s skill-master',
@@ -604,43 +674,70 @@ async function installSkills(config: ProjectConfig, targetDir: string): Promise<
     '-s social-writer',
     '-s project-creator',
     '-y',
-  ].join(' ');
+  ]);
 
-  const commands = [
-    { label: 'core skills', command: baseCommand },
+  const listCommands = prioritySources
+    .filter(source => source.listOnInit)
+    .map(source => ({
+      label: `${source.label} --list`,
+      command: buildAddSkillCommand(source.id, ['--list']),
+      progressMessage: `Fetching available skills from ${source.label}`,
+    }));
+
+  type SkillCommand = {
+    label: string;
+    command: string;
+    progressMessage?: string;
+  };
+
+  const commands: SkillCommand[] = [
+    {
+      label: 'core skills',
+      command: baseCommand,
+      progressMessage: `Installing necessary skills from ${primarySource.label}`,
+    },
+    ...listCommands,
     {
       label: 'ask-questions-if-underspecified',
-      command: `npx add-skill https://github.com/trailofbits/skills -a ${config.aiTool} -s ask-questions-if-underspecified -y`,
+      command: buildAddSkillCommand('https://github.com/trailofbits/skills', [
+        `-a ${config.aiTool}`,
+        '-s ask-questions-if-underspecified',
+        '-y',
+      ]),
     },
   ];
 
   if (config.components.auth) {
     commands.push({
       label: 'auth-implementation-patterns',
-      command: `npx add-skill https://github.com/wshobson/agents -a ${config.aiTool} -s auth-implementation-patterns -y`,
+      command: `npx skills add https://github.com/wshobson/agents -a ${config.aiTool} -s auth-implementation-patterns -y`,
     });
   }
 
   if (config.components.frontend) {
     commands.push({
       label: 'vercel-react-best-practices',
-      command: `npx add-skill https://github.com/vercel-labs/agent-skills -a ${config.aiTool} -s vercel-react-best-practices -y`,
+      command: `npx skills add https://github.com/vercel-labs/agent-skills -a ${config.aiTool} -s vercel-react-best-practices -y`,
     });
   }
 
-  for (const { label, command } of commands) {
+  for (const { label, command, progressMessage } of commands) {
+    const spinner = progressMessage ? startSpinner(progressMessage) : null;
+
     try {
-      execSync(command, { cwd: targetDir, stdio: 'pipe' });
+      await runCommand(command, targetDir);
+      spinner?.stop(`✓ ${progressMessage}`);
     } catch (error) {
-      const execError = error as NodeJS.ErrnoException & { stdout?: Buffer; stderr?: Buffer };
+      const execError = error as CommandError;
+      spinner?.stop(`✖ ${progressMessage ?? label}`);
       console.log(`\n⚠️  Could not install ${label}.`);
 
       if (execError.stderr && execError.stderr.length > 0) {
-        console.log(execError.stderr.toString().trim());
+        console.log(execError.stderr.trim());
       }
 
       if (execError.stdout && execError.stdout.length > 0) {
-        console.log(execError.stdout.toString().trim());
+        console.log(execError.stdout.trim());
       }
 
       if (execError.message) {

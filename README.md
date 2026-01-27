@@ -97,11 +97,11 @@ The following skills are automatically installed:
 - **ask-questions-if-underspecified**: Prompts for clarifying requirements
 
 ```sh
-npx add-skill itechmeat/llm-code -a github-copilot -a claude-code -s commits -s skill-master -s coderabbit -s changelog -s openspec -s social-writer -s project-creator
+npx skills add itechmeat/llm-code -a github-copilot -a claude-code -s commits -s skill-master -s coderabbit -s changelog -s openspec -s social-writer -s project-creator
 ```
 
 ```sh
-npx add-skill https://github.com/trailofbits/skills -a [ai-tool] -s ask-questions-if-underspecified
+npx skills add https://github.com/trailofbits/skills -a [ai-tool] -s ask-questions-if-underspecified
 ```
 
 ## Templates

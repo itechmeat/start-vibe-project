@@ -92,22 +92,28 @@ Load template and guide from skill. Ensure consistency with about.md.
 
 After specs.md is complete:
 
-1. **List available skills**:
+### Priority Skill Sources (in order)
+
+1. itechmeat/llm-code
+2. ancoleman/ai-design-components/skills
+
+1. **List available skills** from each priority source (in order):
   ```bash
-  npx add-skill itechmeat/llm-code --list
+  npx skills add itechmeat/llm-code --list
+  npx skills add ancoleman/ai-design-components/skills --list
   ```
 
 2. **Analyze tech stack** from specs.md and identify matching skills
 
 3. **Inform user** which skills you'll install and why
 
-4. **Install matching skills**:
+4. **Install matching skills** from the highest-priority source that provides them:
   ```bash
-  npx add-skill itechmeat/llm-code -a [ai-tool] --skill [skill-name] -y
+  npx skills add [source] -a [ai-tool] --skill [skill-name] -y
   ```
 
 5. **Search for missing skills** at https://skills.sh/?q=[technology]
-  - Install found skills: `npx add-skill [skill-package] -a [ai-tool] -y`
+  - Install found skills: `npx skills add [skill-package] -a [ai-tool] -y`
 
 ---
 
