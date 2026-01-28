@@ -1,28 +1,22 @@
+<p align="center">
+	<img src=".github/social-preview.png" alt="Social preview" width="300" />
+</p>
+
 # start-vibe-project
 
-Initialize a new project with AI-first documentation structure for spec-driven development using OpenSpec.
+**start-vibe-project** is a CLI that bootstraps a new project with an AI-first documentation structure for **spec-driven development**. It creates a ready-to-fill `.project` workspace (about, specs, architecture, context, stories) so teams can align on requirements before writing code.
+
+During setup you choose a template and stack, and the tool prepares agent directories and installs the required skills for your AI tool. The result is a clean, consistent starting point for OpenSpec-driven workflows.
 
 ## Quick Start
 
-### Using bun (recommended)
-
-```bash
-bunx start-vibe-project my-project
-```
-
-Or run interactively:
+**Using bun (recommended)**
 
 ```bash
 bunx start-vibe-project
 ```
 
-### Using npm/npx
-
-```bash
-npx start-vibe-project my-project
-```
-
-Or run interactively:
+**Using npm/npx**
 
 ```bash
 npx start-vibe-project
@@ -67,42 +61,27 @@ my-project/
 4. **Select `creator` agent**: The agent will continue project documentation
 5. **Follow agent instructions**: Complete about.md, specs.md, architecture.md, stories
 
-## Supported AI Tools
+## Supported AI Tools (29)
 
-| Tool | Skills Path | Agents Path |
-|------|-------------|-------------|
-| GitHub Copilot | `.github/skills/` | `.github/agents/` |
-| Claude Code | `.claude/skills/` | `.claude/agents/` |
-| OpenCode | `.opencode/skills/` | `.opencode/agents/` |
-| Codex | `.codex/skills/` | `.codex/agents/` |
-| Cursor | `.cursor/skills/` | `.cursor/agents/` |
-| Windsurf | `.windsurf/skills/` | `.windsurf/agents/` |
-| Cline | `.cline/skills/` | `.cline/agents/` |
-| Continue | `.continue/skills/` | `.continue/agents/` |
-| Amp | `.agents/skills/` | `.agents/agents/` |
-| Roo Code | `.roo/skills/` | `.roo/agents/` |
-| Goose | `.goose/skills/` | `.goose/agents/` |
+- Claude Code
+- Codex
+- GitHub Copilot
+- Cursor
+- OpenCode
+- ... and more supported
 
 ## Installed Skills
 
 The following skills are automatically installed:
 
-- **commits**: Conventional Commits specification
-- **skill-master**: Create and edit Agent Skills
-- **coderabbit**: AI code review
-- **changelog**: Keep a Changelog format
-- **openspec**: OpenSpec artifact-driven workflow
-- **social-writer**: Social media content creation
-- **project-creator**: Project documentation scaffolding
-- **ask-questions-if-underspecified**: Prompts for clarifying requirements
-
-```sh
-npx skills add itechmeat/llm-code -a github-copilot -a claude-code -s commits -s skill-master -s coderabbit -s changelog -s openspec -s social-writer -s project-creator
-```
-
-```sh
-npx skills add https://github.com/trailofbits/skills -a [ai-tool] -s ask-questions-if-underspecified
-```
+- **[project-creator](https://github.com/itechmeat/llm-code/tree/master/skills/project-creator)**: Project documentation scaffolding
+- **[openspec](https://github.com/itechmeat/llm-code/tree/master/skills/openspec)**: OpenSpec artifact-driven workflow
+- **[coderabbit](https://github.com/itechmeat/llm-code/tree/master/skills/coderabbit)**: AI code review
+- **[commits](https://github.com/itechmeat/llm-code/tree/master/skills/commits)**: Conventional Commits specification
+- **[changelog](https://github.com/itechmeat/llm-code/tree/master/skills/changelog)**: Keep a Changelog format
+- **[skill-master](https://github.com/itechmeat/llm-code/tree/master/skills/skill-master)**: Create and edit Agent Skills
+- **[social-writer](https://github.com/itechmeat/llm-code/tree/master/skills/social-writer)**: Social media content creation
+- **[ask-questions-if-underspecified](https://github.com/trailofbits/skills/tree/main/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified)**: Prompts for clarifying requirements
 
 ## Templates
 
@@ -116,7 +95,7 @@ npx skills add https://github.com/trailofbits/skills -a [ai-tool] -s ask-questio
 
 ## Development
 
-### Local testing (without publishing to npm)
+#### Local testing (without publishing to npm)
 
 Link the package globally:
 
@@ -136,13 +115,13 @@ Or run directly from source:
 bun run dev
 ```
 
-### Unlink after testing
+#### Unlink after testing
 
 ```bash
 bun unlink start-vibe-project
 ```
 
-### Build
+#### Build
 
 ```bash
 bun run build

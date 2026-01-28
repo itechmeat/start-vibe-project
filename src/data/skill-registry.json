@@ -1,0 +1,49 @@
+{
+  "start_skills": [
+    {
+      "id": "https://github.com/itechmeat/llm-code",
+      "label": "itechmeat/llm-code",
+      "skills": [
+        { "name": "commits", "tags": ["common", "workflow"] },
+        { "name": "skill-master", "tags": ["common", "skills"] },
+        { "name": "coderabbit", "tags": ["common", "review"] },
+        { "name": "changelog", "tags": ["common", "release"] },
+        { "name": "openspec", "tags": ["common", "planning"] },
+        { "name": "social-writer", "tags": ["common", "content"] },
+        { "name": "project-creator", "tags": ["common", "docs"] },
+        { "name": "vitest", "tags": ["frontend", "qa"] },
+        { "name": "react-testing-library", "tags": ["frontend", "qa"] }
+      ]
+    },
+    {
+      "id": "https://github.com/vercel-labs/agent-skills",
+      "label": "vercel-labs/agent-skills",
+      "skills": [
+        { "name": "vercel-react-best-practices", "tags": ["frontend"] },
+        { "name": "vercel-composition-patterns", "tags": ["frontend"] },
+        { "name": "vercel-react-native-skills", "tags": ["mobile"] },
+        { "name": "web-design-guidelines", "tags": ["frontend", "design"] }
+      ]
+    },
+    {
+      "id": "https://github.com/vercel-labs/agent-browser",
+      "label": "vercel-labs/agent-browser",
+      "skills": [
+        { "name": "agent-browser", "tags": ["frontend"] }
+      ]
+    },
+    {
+      "id": "https://github.com/trailofbits/skills",
+      "label": "trailofbits/skills",
+      "skills": [
+        { "name": "ask-questions-if-underspecified", "tags": ["common"] }
+      ]
+    }
+  ],
+  "priority_repos": [
+    "https://github.com/itechmeat/llm-code",
+    "https://github.com/ancoleman/ai-design-components",
+    "https://github.com/vercel-labs/next-skills",
+    "https://github.com/trailofbits/skills"
+  ]
+}

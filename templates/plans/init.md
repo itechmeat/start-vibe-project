@@ -21,10 +21,11 @@ Mark items as complete by changing `[ ]` to `[x]`.
 
 ## Phase 2: Skills Discovery
 
-- [ ] **List available skills** — Run: `npx skills add itechmeat/llm-code --list`
+- [ ] **List available skills from priority sources** — Run:
+{{prioritySkillList}}
   - Review which skills match project's technology stack from specs.md
   - Inform user which skills will be installed
-- [ ] **Install matching skills** — Run: `npx skills add itechmeat/llm-code -a {{aiTool}} --skill [skill-name] -y`
+- [ ] **Install matching skills by source (after specs.md and architecture.md are complete)** — Run: `npx skills add <source> -a {{aiTool}} -s skill1 -s skill2 -y` once per source
   - Install only skills relevant to project's tech stack
 - [ ] **Search for missing skills** — Check https://skills.sh/?q=[technology] for additional skills
   - For each missing technology, search and install: `npx skills add [skill-package] -a {{aiTool}} -y`

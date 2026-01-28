@@ -86,6 +86,12 @@ Before starting about.md, offer to use **PreVibe** for idea formation:
 
 Load template and guide from skill. Ensure consistency with about.md.
 
+**Version & Tech Decisions (must-do):**
+- Never leave "Yes", "TBD", or "latest" in specs — always replace with concrete technologies **and** versions.
+- If the user didn’t specify technology, propose 2–3 options at once (based on current trends and best practices) and ask them to choose.
+- For versions, determine the latest stable release via web search, **or** ask the user with 2–3 version options.
+- Confirm choices with the user before finalizing the specs.
+
 ---
 
 ## Phase 2: Skills Discovery
