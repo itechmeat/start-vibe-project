@@ -8,6 +8,10 @@
 
 During setup you choose a template and stack, and the tool prepares agent directories and installs the required skills for your AI tool. The result is a clean, consistent starting point for OpenSpec-driven workflows.
 
+<video src="media/start-vibe-project-cli.mp4" width="100%" controls muted></video>
+
+**[⚠️ INSTALL FIRST!](#install-first)**
+
 ## Quick Start
 
 **Using bun (recommended)**
@@ -90,8 +94,12 @@ The following skills are automatically installed:
 | Web Application | Full-stack or frontend web application |
 | Mobile Application | iOS, Android, or cross-platform mobile app |
 | API Service | Backend REST or GraphQL API service |
-| Library / Package | Reusable library or npm package |
-| Empty Project | Blank project with just documentation structure |
+
+## Install first
+
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** (*required*) — a spec-driven layer for AI development; global install: `npm install -g @fission-ai/openspec@latest`
+- **[Relief Pilot](https://marketplace.visualstudio.com/items?itemName=ivan-mezentsev.reliefpilot)** (*conditional*) — install only if you selected Relief Pilot during setup; configure it per the extension page instructions.
+- **[SimpleMem](https://github.com/aiming-lab/SimpleMem)** (*recommended*) — long-term memory for working with AI across sessions; recommended to use it via [MCP](https://mcp.simplemem.cloud/).
 
 ## Development
 

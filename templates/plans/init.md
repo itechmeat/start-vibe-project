@@ -27,8 +27,9 @@ Mark items as complete by changing `[ ]` to `[x]`.
   - Inform user which skills will be installed
 - [ ] **Install matching skills by source (after specs.md and architecture.md are complete)** — Run: `npx skills add <source> -a {{aiTool}} -s skill1 -s skill2 -y` once per source
   - Install only skills relevant to project's tech stack
-- [ ] **Search for missing skills** — Check https://skills.sh/?q=[technology] for additional skills
-  - For each missing technology, search and install: `npx skills add [skill-package] -a {{aiTool}} -y`
+- [ ] **Search for missing skills** — Run: `npx skills find <query>` for each missing technology
+  - Install a single package by name: `npx skills add [skill-package] -a {{aiTool}} -y`
+  - Use `npx skills add <source> -a {{aiTool}} -s skill1 -s skill2 -y` when adding multiple specific skills from one source
 
 ## Phase 3: Architecture & Context
 

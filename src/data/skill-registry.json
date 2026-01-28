@@ -11,18 +11,31 @@
         { "name": "openspec", "tags": ["common", "planning"] },
         { "name": "social-writer", "tags": ["common", "content"] },
         { "name": "project-creator", "tags": ["common", "docs"] },
+        { "name": "vite", "tags": ["react", "vue"] },
         { "name": "vitest", "tags": ["frontend", "qa"] },
-        { "name": "react-testing-library", "tags": ["frontend", "qa"] }
+        { "name": "react-testing-library", "tags": ["react", "qa"] },
+        { "name": "makefile", "tags": ["backend"] },
+        { "name": "openapi", "tags": ["auth"] },
+        { "name": "fastapi", "tags": ["fastapi"] },
+        { "name": "postgresql", "tags": ["postgresql"] },
+        { "name": "turso", "tags": ["turso"] }
       ]
     },
     {
       "id": "https://github.com/vercel-labs/agent-skills",
       "label": "vercel-labs/agent-skills",
       "skills": [
-        { "name": "vercel-react-best-practices", "tags": ["frontend"] },
+        { "name": "vercel-react-best-practices", "tags": ["react"] },
         { "name": "vercel-composition-patterns", "tags": ["frontend"] },
-        { "name": "vercel-react-native-skills", "tags": ["mobile"] },
+        { "name": "vercel-react-native-skills", "tags": ["react-native"] },
         { "name": "web-design-guidelines", "tags": ["frontend", "design"] }
+      ]
+    },
+    {
+      "id": "https://github.com/vercel-labs/skills",
+      "label": "vercel-labs/skills",
+      "skills": [
+        { "name": "find-skills", "tags": ["common"] }
       ]
     },
     {
@@ -33,17 +46,76 @@
       ]
     },
     {
+      "id": "https://github.com/vercel-labs/next-skills",
+      "label": "vercel-labs/next-skills",
+      "skills": [
+        { "name": "next-best-practices", "tags": ["nextjs"] }
+      ]
+    },
+    {
       "id": "https://github.com/trailofbits/skills",
       "label": "trailofbits/skills",
       "skills": [
         { "name": "ask-questions-if-underspecified", "tags": ["common"] }
+      ]
+    },
+    {
+      "id": "https://github.com/antfu/skills",
+      "label": "antfu/skills",
+      "skills": [
+        { "name": "pnpm", "tags": ["frontend"] },
+        { "name": "nuxt", "tags": ["nuxt"] }
+      ]
+    },
+    {
+      "id": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+      "label": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "skills": [
+        { "name": "ui-ux-pro-max", "tags": ["design", "frontend"] }
+      ]
+    },
+    {
+      "id": "https://github.com/coreyhaines31/marketingskills",
+      "label": "coreyhaines31/marketingskills",
+      "skills": [
+        { "name": "seo-audit", "tags": ["seo", "frontend"] }
+      ]
+    },
+    {
+      "id": "https://github.com/hyf0/vue-skills",
+      "label": "hyf0/vue-skills",
+      "skills": [
+        { "name": "vue-best-practices", "tags": ["vue"] }
+      ]
+    },
+    {
+      "id": "https://github.com/wshobson/agents",
+      "label": "wshobson/agents",
+      "skills": [
+        { "name": "typescript-advanced-types", "tags": ["frontend"] },
+        { "name": "architecture-patterns", "tags": ["backend"] }
+      ]
+    },
+    {
+      "id": "https://github.com/expo/skills",
+      "label": "expo/skills",
+      "skills": [
+        { "name": "building-native-ui", "tags": ["react-native"] },
+        { "name": "expo-cicd-workflows", "tags": ["react-native"] },
+        { "name": "use-dom", "tags": ["react-native"] },
+        { "name": "expo-api-routes", "tags": ["react-native"] },
+        { "name": "native-data-fetching", "tags": ["react-native"] },
+        { "name": "expo-dev-client", "tags": ["react-native"] },
+        { "name": "expo-deployment", "tags": ["react-native"] }
       ]
     }
   ],
   "priority_repos": [
     "https://github.com/itechmeat/llm-code",
     "https://github.com/ancoleman/ai-design-components",
-    "https://github.com/vercel-labs/next-skills",
-    "https://github.com/trailofbits/skills"
+    "https://github.com/trailofbits/skills",
+    "https://skills.sh/antfu/skills",
+    "https://skills.sh/wshobson/agents",
+    "https://github.com/coreyhaines31/marketingskills"
   ]
 }

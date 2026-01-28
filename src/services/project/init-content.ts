@@ -23,6 +23,11 @@ export async function generateInitMd(config: ProjectConfig): Promise<string> {
     stack: config.backendStack,
     label: 'backendStack',
   });
+  const databaseComponent = formatComponentDisplay({
+    enabled: config.components.database,
+    stack: config.databaseStack,
+    label: 'databaseStack',
+  });
 
   const registry = await loadSkillRegistry();
   const priorityRepos = registry.priority_repos ?? [];
@@ -39,7 +44,7 @@ export async function generateInitMd(config: ProjectConfig): Promise<string> {
     name: config.name,
     frontendComponent,
     backendComponent,
-    databaseComponent: config.components.database ? 'Yes' : 'No',
+    databaseComponent,
     authComponent: config.components.auth ? 'Yes' : 'No',
     opsxFFCommand,
     prioritySkillList,

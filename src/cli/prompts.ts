@@ -1,14 +1,18 @@
 import { program } from 'commander';
 import * as p from '@clack/prompts';
 import chalk from 'chalk';
-import { join } from 'path';
+import { mkdir, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
+import { dirname, join, resolve, sep } from 'path';
+import trash from 'trash';
 
 import { agents, type AgentType } from '../config/agents.js';
 import {
   templates,
   frontendStacks,
+  mobileFrontendStacks,
   backendStacks,
+  databaseStacks,
   type ProjectConfig,
   type ProjectComponents,
 } from '../config/templates.js';
@@ -30,7 +34,7 @@ export function runCli(): void {
  ╚████╔╝ ██║██╔══██╗██╔══╝
   ╚██╔╝  ██║██████╔╝███████╗
    ╚═╝   ╚═╝╚═════╝ ╚══════╝
-   Star Project
+   Start Project
 `;
 
   if (process.stdout.isTTY) {
@@ -112,6 +116,9 @@ export function runCli(): void {
         process.exit(1);
       }
 
+      const isMobileTemplate = selectedTemplate.id === 'mobile-app';
+      const isApiTemplate = selectedTemplate.id === 'api-service';
+
       // Step 3: Project description
       const descriptionResult = await p.text({
         message: 'Briefly describe your project (this will be used for about.md):',
@@ -124,14 +131,22 @@ export function runCli(): void {
       }
 
       // Step 4: Project components (checkboxes)
+      const frontendLabel = isMobileTemplate ? 'Frontend (Mobile UI)' : 'Frontend (Web UI)';
+      const frontendHint = isMobileTemplate ? 'Mobile UI' : 'Web UI';
+      const componentOptions = [
+        ...(isApiTemplate
+          ? []
+          : [{ value: 'frontend', label: frontendLabel, hint: frontendHint }]),
+        { value: 'backend', label: 'Backend', hint: 'Server/API' },
+        ...(isApiTemplate
+          ? []
+          : [{ value: 'database', label: 'Database', hint: 'Data storage' }]),
+        { value: 'auth', label: 'Authentication', hint: 'User auth/sessions' },
+      ];
+
       const componentsResult = await p.multiselect({
         message: 'What components will your project have?',
-        options: [
-          { value: 'frontend', label: 'Frontend', hint: 'Web UI' },
-          { value: 'backend', label: 'Backend', hint: 'Server/API' },
-          { value: 'database', label: 'Database', hint: 'Data storage' },
-          { value: 'auth', label: 'Authentication', hint: 'User auth/sessions' },
-        ],
+        options: componentOptions,
         required: false,
       });
 
@@ -151,9 +166,10 @@ export function runCli(): void {
       let frontendStack: string | undefined;
       let selectedFrontendStack: StackOption | undefined;
       if (components.frontend) {
+        const availableFrontendStacks = isMobileTemplate ? mobileFrontendStacks : frontendStacks;
         selectedFrontendStack = await selectStack(
           'Which frontend stack do you prefer?',
-          frontendStacks,
+          availableFrontendStacks,
           'Selected frontend stack is not recognized'
         );
         frontendStack = selectedFrontendStack.id;
@@ -171,7 +187,19 @@ export function runCli(): void {
         backendStack = selectedBackendStack.id;
       }
 
-      // Step 7: AI tool selection
+      // Step 7: Database stack (if database selected)
+      let databaseStack: string | undefined;
+      let selectedDatabaseStack: StackOption | undefined;
+      if (components.database) {
+        selectedDatabaseStack = await selectStack(
+          'Which database do you prefer?',
+          databaseStacks,
+          'Selected database stack is not recognized'
+        );
+        databaseStack = selectedDatabaseStack.id;
+      }
+
+      // Step 8: AI tool selection
       const aiToolOptions = Object.entries(agents).map(([key, config]) => ({
         value: key,
         label: config.displayName,
@@ -187,16 +215,18 @@ export function runCli(): void {
         process.exit(0);
       }
 
-      const useSimpleMem = await selectYesNo(
-        'Will you use SimpleMem? https://github.com/aiming-lab/SimpleMem'
-      );
-
       let useReliefPilot = false;
       if (aiToolResult === 'github-copilot') {
         useReliefPilot = await selectYesNo(
-          'Will you use Relief Pilot? https://marketplace.visualstudio.com/items?itemName=ivan-mezentsev.reliefpilot'
+            'Will you use Relief Pilot for the better experience and low costs?',
+            { yesHint: 'Extension Relief Pilot for VS Code is required' }
         );
       }
+
+      const useSimpleMem = await selectYesNo(
+        'Will you use SimpleMem for long-term memory?',
+        { yesHint: 'SimpleMem MCP or local integration is required' }
+      );
 
       // Step 8: Confirmation
       const selectedAgent = agents[aiToolResult as AgentType];
@@ -222,6 +252,13 @@ export function runCli(): void {
         }
         p.log.message(`  Backend: ${chalk.cyan(selectedBackendStack.name)}`);
       }
+      if (components.database) {
+        if (!selectedDatabaseStack) {
+          p.log.error('Database stack is required when database is selected');
+          process.exit(1);
+        }
+        p.log.message(`  Database: ${chalk.cyan(selectedDatabaseStack.name)}`);
+      }
       p.log.info(chalk.dim('─'.repeat(50)));
       console.log();
 
@@ -242,19 +279,48 @@ export function runCli(): void {
         components,
         frontendStack,
         backendStack,
+        databaseStack,
         aiTool: aiToolResult,
         useSimpleMem,
         useReliefPilot,
       };
 
+      const progressFilePath = join(process.cwd(), '.start-vibe-project', `${projectName}.json`);
+      const progressTracker = createProgressTracker(progressFilePath);
+
+      const handleShutdown = async (signal: NodeJS.Signals): Promise<void> => {
+        try {
+          await progressTracker.markCancelled();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          p.log.error(`Failed to record cancellation: ${message}`);
+        }
+
+        p.cancel(`Operation cancelled (${signal})`);
+      };
+
+      const onSigint = async (): Promise<void> => {
+        await handleShutdown('SIGINT');
+        process.exit(0);
+      };
+
+      const onSigterm = async (): Promise<void> => {
+        await handleShutdown('SIGTERM');
+        process.exit(0);
+      };
+
+      process.once('SIGINT', onSigint);
+      process.once('SIGTERM', onSigterm);
+
       try {
         p.log.info('Creating project...');
-        await createProject(config, targetDir);
-        p.log.success('Project created!');
+        await progressTracker.recordStep('start');
+        await createProject(config, targetDir, { onProgress: progressTracker.recordStep });
+        await progressTracker.markCompleted();
+        await safeTrashPath(progressTracker.path, process.cwd());
 
         // Final message
-        console.log();
-        p.log.success(chalk.green.bold('✓ Project initialized successfully!'));
+        p.log.success(chalk.green.bold('✓ Installation completed successfully! 🎉'));
         console.log();
         p.log.message(chalk.bold('Next steps:'));
         p.log.message(`  1. ${chalk.cyan(`cd ${projectName}`)}`);
@@ -262,25 +328,46 @@ export function runCli(): void {
         p.log.message(`  3. Select the ${chalk.cyan('creator')} agent`);
         p.log.message(`  4. Ask the agent to ${chalk.cyan('continue project setup')}`);
         p.log.message(`  5. Follow the agent's instructions to complete documentation`);
-        console.log();
 
-        p.outro(chalk.dim('Happy coding! 🚀'));
+        const happyMessage = applyHorizontalGradient(
+          'Happy coding! 🚀',
+          { r: 79, g: 70, b: 229 },
+          { r: 34, g: 211, b: 238 },
+          { boldLines: new Set(['Happy coding! 🚀']) }
+        );
+        p.outro(happyMessage);
       } catch (error) {
+        await progressTracker.markError(error);
+        await safeTrashPath(targetDir, process.cwd());
         p.log.error('Failed to create project');
         p.log.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         process.exit(1);
+      } finally {
+        process.off('SIGINT', onSigint);
+        process.off('SIGTERM', onSigterm);
       }
     });
 
   program.parse();
 }
 
-async function selectYesNo(message: string): Promise<boolean> {
+async function selectYesNo(
+  message: string,
+  hints?: { yesHint?: string; noHint?: string }
+): Promise<boolean> {
   const result = await p.select({
     message,
     options: [
-      { value: 'yes', label: 'Yes' },
-      { value: 'no', label: 'No' },
+      {
+        value: 'yes',
+        label: 'Yes',
+        hint: hints?.yesHint ? chalk.gray(hints.yesHint) : undefined,
+      },
+      {
+        value: 'no',
+        label: 'No',
+        hint: hints?.noHint ? chalk.gray(hints.noHint) : undefined,
+      },
     ],
     initialValue: 'yes',
   });
@@ -291,6 +378,87 @@ async function selectYesNo(message: string): Promise<boolean> {
   }
 
   return result === 'yes';
+}
+
+type ProgressStatus = 'in-progress' | 'error' | 'cancelled' | 'completed';
+
+type ProgressState = {
+  status: ProgressStatus;
+  steps: string[];
+  lastStep?: string;
+  updatedAt: string;
+  error?: string;
+};
+
+function createProgressTracker(progressFilePath: string): {
+  recordStep: (step: string) => Promise<void>;
+  markError: (error: unknown) => Promise<void>;
+  markCancelled: () => Promise<void>;
+  markCompleted: () => Promise<void>;
+  path: string;
+} {
+  const steps: string[] = [];
+  let lastStep: string | undefined;
+
+  const writeState = async (status: ProgressStatus, error?: string): Promise<void> => {
+    await mkdir(dirname(progressFilePath), { recursive: true });
+
+    const state: ProgressState = {
+      status,
+      steps: [...steps],
+      lastStep,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (error) {
+      state.error = error;
+    }
+
+    await writeFile(progressFilePath, JSON.stringify(state, null, 2));
+  };
+
+  return {
+    recordStep: async (step: string) => {
+      steps.push(step);
+      lastStep = step;
+      await writeState('in-progress');
+    },
+    markError: async (error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      await writeState('error', message);
+    },
+    markCancelled: async () => {
+      await writeState('cancelled');
+    },
+    markCompleted: async () => {
+      await writeState('completed');
+    },
+    path: progressFilePath,
+  };
+}
+
+function assertPathWithin(baseDir: string, targetPath: string): string {
+  const resolvedBase = resolve(baseDir);
+  const resolvedTarget = resolve(targetPath);
+
+  if (resolvedTarget === resolvedBase) {
+    throw new Error(`Refusing to remove path: target must be strictly inside ${resolvedBase}`);
+  }
+
+  if (!resolvedTarget.startsWith(`${resolvedBase}${sep}`)) {
+    throw new Error(`Refusing to remove path: target must be strictly inside ${resolvedBase}`);
+  }
+
+  return resolvedTarget;
+}
+
+async function safeTrashPath(targetPath: string, baseDir: string): Promise<void> {
+  if (!existsSync(targetPath)) {
+    return;
+  }
+
+  const safePath = assertPathWithin(baseDir, targetPath);
+  await trash([safePath], { glob: false });
 }
 
 async function selectStack<T extends StackOption>(

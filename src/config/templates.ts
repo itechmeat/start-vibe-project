@@ -20,16 +20,6 @@ export const templates: ProjectTemplate[] = [
     name: 'API Service',
     description: 'Backend REST or GraphQL API service',
   },
-  {
-    id: 'library',
-    name: 'Library / Package',
-    description: 'Reusable library or npm package',
-  },
-  {
-    id: 'empty',
-    name: 'Empty Project',
-    description: 'Blank project with just documentation structure',
-  },
 ];
 
 export interface FrontendStack {
@@ -42,6 +32,14 @@ export const frontendStacks: FrontendStack[] = [
   { id: 'nextjs', name: 'Next.js' },
   { id: 'vue', name: 'Vue.js' },
   { id: 'nuxtjs', name: 'Nuxt.js' },
+  { id: 'other', name: 'Other (to be specified by agent)' },
+];
+
+export const mobileFrontendStacks: FrontendStack[] = [
+  { id: 'react-native', name: 'React Native' },
+  { id: 'flutter', name: 'Flutter' },
+  { id: 'ios-swift', name: 'Native iOS (Swift)' },
+  { id: 'android-kotlin', name: 'Native Android (Kotlin)' },
   { id: 'other', name: 'Other (to be specified by agent)' },
 ];
 
@@ -59,6 +57,19 @@ export const backendStacks: BackendStack[] = [
   { id: 'other', name: 'Other (to be specified by agent)' },
 ];
 
+export interface DatabaseStack {
+  id: string;
+  name: string;
+}
+
+export const databaseStacks: DatabaseStack[] = [
+  { id: 'postgresql', name: 'PostgreSQL' },
+  { id: 'mysql', name: 'MySQL' },
+  { id: 'mongodb', name: 'MongoDB' },
+  { id: 'turso', name: 'Turso' },
+  { id: 'other', name: 'Other (to be specified by agent)' },
+];
+
 export interface ProjectComponents {
   frontend: boolean;
   backend: boolean;
@@ -73,6 +84,7 @@ export interface ProjectConfig {
   components: ProjectComponents;
   frontendStack?: string;
   backendStack?: string;
+  databaseStack?: string;
   aiTool: string;
   useSimpleMem?: boolean;
   useReliefPilot?: boolean;

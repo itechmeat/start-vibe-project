@@ -47,6 +47,66 @@ export interface AgentConfig {
 const home = homedir();
 
 export const agents: Record<AgentType, AgentConfig> = {
+  opencode: {
+    name: 'opencode',
+    displayName: 'OpenCode',
+    skillsDir: '.opencode/skills',
+    agentsDir: '.opencode/agents',
+    globalSkillsDir: join(home, '.config/opencode/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(home, '.config/opencode'));
+    },
+  },
+  'claude-code': {
+    name: 'claude-code',
+    displayName: 'Claude Code',
+    skillsDir: '.claude/skills',
+    agentsDir: '.claude/agents',
+    globalSkillsDir: join(home, '.claude/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(home, '.claude'));
+    },
+  },
+  codex: {
+    name: 'codex',
+    displayName: 'Codex',
+    skillsDir: '.codex/skills',
+    agentsDir: '.codex/agents',
+    globalSkillsDir: join(home, '.codex/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(home, '.codex'));
+    },
+  },
+  'gemini-cli': {
+    name: 'gemini-cli',
+    displayName: 'Gemini CLI',
+    skillsDir: '.gemini/skills',
+    agentsDir: '.gemini/agents',
+    globalSkillsDir: join(home, '.gemini/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(home, '.gemini'));
+    },
+  },
+  'github-copilot': {
+    name: 'github-copilot',
+    displayName: 'GitHub Copilot',
+    skillsDir: '.github/skills',
+    agentsDir: '.github/agents',
+    globalSkillsDir: join(home, '.copilot/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(process.cwd(), '.github')) || existsSync(join(home, '.copilot'));
+    },
+  },
+  cursor: {
+    name: 'cursor',
+    displayName: 'Cursor',
+    skillsDir: '.cursor/skills',
+    agentsDir: '.cursor/agents',
+    globalSkillsDir: join(home, '.cursor/skills'),
+    detectInstalled: async () => {
+      return existsSync(join(home, '.cursor'));
+    },
+  },
   amp: {
     name: 'amp',
     displayName: 'Amp',
@@ -65,16 +125,6 @@ export const agents: Record<AgentType, AgentConfig> = {
     globalSkillsDir: join(home, '.gemini/antigravity/global_skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.gemini/antigravity'));
-    },
-  },
-  'claude-code': {
-    name: 'claude-code',
-    displayName: 'Claude Code',
-    skillsDir: '.claude/skills',
-    agentsDir: '.claude/agents',
-    globalSkillsDir: join(home, '.claude/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(home, '.claude'));
     },
   },
   clawdbot: {
@@ -107,16 +157,6 @@ export const agents: Record<AgentType, AgentConfig> = {
       return existsSync(join(home, '.codebuddy'));
     },
   },
-  codex: {
-    name: 'codex',
-    displayName: 'Codex',
-    skillsDir: '.codex/skills',
-    agentsDir: '.codex/agents',
-    globalSkillsDir: join(home, '.codex/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(home, '.codex'));
-    },
-  },
   'command-code': {
     name: 'command-code',
     displayName: 'Command Code',
@@ -147,16 +187,6 @@ export const agents: Record<AgentType, AgentConfig> = {
       return existsSync(join(home, '.config/crush'));
     },
   },
-  cursor: {
-    name: 'cursor',
-    displayName: 'Cursor',
-    skillsDir: '.cursor/skills',
-    agentsDir: '.cursor/agents',
-    globalSkillsDir: join(home, '.cursor/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(home, '.cursor'));
-    },
-  },
   droid: {
     name: 'droid',
     displayName: 'Droid',
@@ -165,26 +195,6 @@ export const agents: Record<AgentType, AgentConfig> = {
     globalSkillsDir: join(home, '.factory/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.factory'));
-    },
-  },
-  'gemini-cli': {
-    name: 'gemini-cli',
-    displayName: 'Gemini CLI',
-    skillsDir: '.gemini/skills',
-    agentsDir: '.gemini/agents',
-    globalSkillsDir: join(home, '.gemini/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(home, '.gemini'));
-    },
-  },
-  'github-copilot': {
-    name: 'github-copilot',
-    displayName: 'GitHub Copilot',
-    skillsDir: '.github/skills',
-    agentsDir: '.github/agents',
-    globalSkillsDir: join(home, '.copilot/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(process.cwd(), '.github')) || existsSync(join(home, '.copilot'));
     },
   },
   goose: {
@@ -235,16 +245,6 @@ export const agents: Record<AgentType, AgentConfig> = {
     globalSkillsDir: join(home, '.mux/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.mux'));
-    },
-  },
-  opencode: {
-    name: 'opencode',
-    displayName: 'OpenCode',
-    skillsDir: '.opencode/skills',
-    agentsDir: '.opencode/agents',
-    globalSkillsDir: join(home, '.config/opencode/skills'),
-    detectInstalled: async () => {
-      return existsSync(join(home, '.config/opencode'));
     },
   },
   openhands: {

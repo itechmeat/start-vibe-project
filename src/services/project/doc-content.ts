@@ -17,6 +17,11 @@ export function generateAboutMd(config: ProjectConfig): string {
     stack: config.backendStack,
     label: 'backendStack',
   });
+  const databaseComponent = formatComponentDisplay({
+    enabled: config.components.database,
+    stack: config.databaseStack,
+    label: 'databaseStack',
+  });
 
   return `# ${config.name}
 
@@ -82,7 +87,7 @@ _To be defined by the agent._
 
 - **Frontend**: ${frontendComponent}
 - **Backend**: ${backendComponent}
-- **Database**: ${config.components.database ? 'Yes' : 'No'}
+- **Database**: ${databaseComponent}
 - **Authentication**: ${config.components.auth ? 'Yes' : 'No'}
 `;
 }
@@ -109,6 +114,14 @@ function getFrontendStackRows(stackId?: string): StackRow[] {
       return [{ name: 'Vue', purpose: 'UI framework' }];
     case 'nuxtjs':
       return [{ name: 'Nuxt', purpose: 'Full-stack Vue framework' }];
+    case 'react-native':
+      return [{ name: 'React Native', purpose: 'Mobile UI framework' }];
+    case 'flutter':
+      return [{ name: 'Flutter', purpose: 'Mobile UI framework' }];
+    case 'ios-swift':
+      return [{ name: 'Swift (iOS)', purpose: 'Native iOS development' }];
+    case 'android-kotlin':
+      return [{ name: 'Kotlin (Android)', purpose: 'Native Android development' }];
     default:
       return [{ name: stackId, purpose: 'Core framework' }];
   }
@@ -135,10 +148,48 @@ function getBackendStackRows(stackId?: string): StackRow[] {
   }
 }
 
+function getDatabaseStackRows(stackId?: string): StackRow[] {
+  if (!stackId || stackId === 'other') {
+    return [
+      { name: 'TBD (select database)', purpose: 'Primary data store' },
+      { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+    ];
+  }
+
+  switch (stackId) {
+    case 'postgresql':
+      return [
+        { name: 'PostgreSQL', purpose: 'Primary data store' },
+        { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+      ];
+    case 'mysql':
+      return [
+        { name: 'MySQL', purpose: 'Primary data store' },
+        { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+      ];
+    case 'mongodb':
+      return [
+        { name: 'MongoDB', purpose: 'Primary data store' },
+        { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+      ];
+    case 'turso':
+      return [
+        { name: 'Turso', purpose: 'Primary data store' },
+        { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+      ];
+    default:
+      return [
+        { name: stackId, purpose: 'Primary data store' },
+        { name: 'Cache/Session (TBD)', purpose: 'Cache + sessions' },
+      ];
+  }
+}
+
 export function generateSpecsMd(config: ProjectConfig): string {
   const templateName = getTemplateDisplayName(config.template);
   const frontendDisplay = config.frontendStack ? getStackDisplayName(config.frontendStack) : 'TBD';
   const backendDisplay = config.backendStack ? getStackDisplayName(config.backendStack) : 'TBD';
+  const databaseDisplay = config.databaseStack ? getStackDisplayName(config.databaseStack) : 'TBD';
   const frontendSummary = config.components.frontend
     ? `${frontendDisplay} (set explicit versions)`
     : 'No';
@@ -146,7 +197,7 @@ export function generateSpecsMd(config: ProjectConfig): string {
     ? `${backendDisplay} (set explicit versions)`
     : 'No';
   const databaseSummary = config.components.database
-    ? 'TBD (select database tech + latest stable versions)'
+    ? `${databaseDisplay} (set explicit versions)`
     : 'No';
   const authSummary = config.components.auth
     ? 'TBD (select auth tech + latest stable versions)'
@@ -222,12 +273,12 @@ ${backendRows.map(row => `| ${row.name} | <latest-stable> | ${row.purpose} |`).j
   }
 
   if (config.components.database) {
+    const databaseRows = getDatabaseStackRows(config.databaseStack);
     content += `### Database
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Primary DB (TBD) | <latest-stable> | Main data store |
-| Cache/Session (TBD) | <latest-stable> | Cache + sessions |
+${databaseRows.map(row => `| ${row.name} | <latest-stable> | ${row.purpose} |`).join('\n')}
 
 #### Database Requirements
 - Primary data store type (SQL/NoSQL) and rationale
@@ -321,6 +372,7 @@ export function generateArchitectureMd(config: ProjectConfig): string {
   const templateName = getTemplateDisplayName(config.template);
   const frontendDisplay = config.frontendStack ? getStackDisplayName(config.frontendStack) : 'TBD';
   const backendDisplay = config.backendStack ? getStackDisplayName(config.backendStack) : 'TBD';
+  const databaseDisplay = config.databaseStack ? getStackDisplayName(config.databaseStack) : 'TBD';
 
   const repoLayoutSection =
     config.components.frontend && config.components.backend
@@ -362,6 +414,7 @@ ${config.components.backend ? `### Backend
 ` : '### Backend\n- Not in scope\n'}
 
 ${config.components.database ? `### Database
+- Stack: ${databaseDisplay}
 - Data model overview and storage strategy
 - Migration/rollback strategy
 - Backup and recovery requirements

@@ -118,8 +118,8 @@ After specs.md is complete:
   npx skills add [source] -a [ai-tool] --skill [skill-name] -y
   ```
 
-5. **Search for missing skills** at https://skills.sh/?q=[technology]
-  - Install found skills: `npx skills add [skill-package] -a [ai-tool] -y`
+5. **Search for missing skills** using the `find-skills` skill
+  - For each missing technology, run the skill and install results: `npx skills add [skill-package] -a [ai-tool] -y`
 
 ---
 
