@@ -8,7 +8,7 @@
 
 During setup you choose a template and stack, and the tool prepares agent directories and installs the required skills for your AI tool. The result is a clean, consistent starting point for OpenSpec-driven workflows.
 
-<video src="media/start-vibe-project-cli.mp4" width="100%" controls muted></video>
+https://github.com/user-attachments/assets/919f510e-eef8-44b2-81ef-25eb6ffce0d5
 
 **[⚠️ INSTALL FIRST!](#install-first)**
 
