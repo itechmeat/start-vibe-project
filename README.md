@@ -8,7 +8,7 @@
 
 During setup you choose a template and stack, and the tool prepares agent directories and installs the required skills for your AI tool. The result is a clean, consistent starting point for OpenSpec-driven workflows.
 
-https://github.com/user-attachments/assets/919f510e-eef8-44b2-81ef-25eb6ffce0d5
+https://github.com/user-attachments/assets/0e654592-78e4-47b3-b6a8-1b794720e051
 
 **[⚠️ INSTALL FIRST!](#install-first)**
 
