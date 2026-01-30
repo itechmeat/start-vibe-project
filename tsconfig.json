@@ -8,7 +8,23 @@
     "skipLibCheck": true,
     "declaration": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "noUncheckedIndexedAccess": true,
+
+    "noImplicitOverride": true,
+    "verbatimModuleSyntax": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@domain/*": ["./src/domain/*"],
+      "@app/*": ["./src/app/*"],
+      "@infra/*": ["./src/infra/*"],
+      "@cli/*": ["./src/cli/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]

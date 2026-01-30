@@ -34,59 +34,42 @@
     {
       "id": "https://github.com/vercel-labs/skills",
       "label": "vercel-labs/skills",
-      "skills": [
-        { "name": "find-skills", "tags": ["common"] }
-      ]
+      "skills": [{ "name": "find-skills", "tags": ["common"] }]
     },
     {
       "id": "https://github.com/vercel-labs/agent-browser",
       "label": "vercel-labs/agent-browser",
-      "skills": [
-        { "name": "agent-browser", "tags": ["frontend"] }
-      ]
+      "skills": [{ "name": "agent-browser", "tags": ["frontend"] }]
     },
     {
       "id": "https://github.com/vercel-labs/next-skills",
       "label": "vercel-labs/next-skills",
-      "skills": [
-        { "name": "next-best-practices", "tags": ["nextjs"] }
-      ]
+      "skills": [{ "name": "next-best-practices", "tags": ["nextjs"] }]
     },
     {
       "id": "https://github.com/trailofbits/skills",
       "label": "trailofbits/skills",
-      "skills": [
-        { "name": "ask-questions-if-underspecified", "tags": ["common"] }
-      ]
+      "skills": [{ "name": "ask-questions-if-underspecified", "tags": ["common"] }]
     },
     {
       "id": "https://github.com/antfu/skills",
       "label": "antfu/skills",
-      "skills": [
-        { "name": "pnpm", "tags": ["frontend"] },
-        { "name": "nuxt", "tags": ["nuxt"] }
-      ]
+      "skills": [{ "name": "pnpm", "tags": ["frontend"] }, { "name": "nuxt", "tags": ["nuxt"] }]
     },
     {
       "id": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
       "label": "nextlevelbuilder/ui-ux-pro-max-skill",
-      "skills": [
-        { "name": "ui-ux-pro-max", "tags": ["design", "frontend"] }
-      ]
+      "skills": [{ "name": "ui-ux-pro-max", "tags": ["design", "frontend"] }]
     },
     {
       "id": "https://github.com/coreyhaines31/marketingskills",
       "label": "coreyhaines31/marketingskills",
-      "skills": [
-        { "name": "seo-audit", "tags": ["seo", "frontend"] }
-      ]
+      "skills": [{ "name": "seo-audit", "tags": ["seo", "frontend"] }]
     },
     {
       "id": "https://github.com/hyf0/vue-skills",
       "label": "hyf0/vue-skills",
-      "skills": [
-        { "name": "vue-best-practices", "tags": ["vue"] }
-      ]
+      "skills": [{ "name": "vue-best-practices", "tags": ["vue"] }]
     },
     {
       "id": "https://github.com/wshobson/agents",

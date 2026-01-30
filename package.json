@@ -18,7 +18,15 @@
   "scripts": {
     "build": "bun run tsup src/index.ts --format esm --dts --clean",
     "dev": "bun run src/index.ts",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format --write src/",
+    "typecheck": "tsc --noEmit",
+    "docs": "typedoc",
+    "docs:serve": "typedoc --watch"
   },
   "keywords": [
     "project-generator",
@@ -36,15 +44,19 @@
     "url": "https://github.com/itechmeat/start-vibe-project/issues"
   },
   "dependencies": {
-    "@clack/prompts": "^0.11.0",
+    "@clack/prompts": "^1.0.0",
     "chalk": "^5.4.1",
     "commander": "^14.0.2",
-    "trash": "^8.1.0"
+    "trash": "^10.1.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18",
+    "@biomejs/biome": "^2.3.13",
+    "typedoc": "^0.28.16"
   },
   "engines": {
     "node": ">=18"

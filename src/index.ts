@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import { runCli } from './cli/prompts.js';
+import { runCli } from './cli/index.js';
 
 runCli();
