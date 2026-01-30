@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "simplemem": {
+      "type": "remote",
+      "url": "https://mcp.simplemem.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOTAyMjcxOWYtNGViOC00N2RlLWE0MTEtNDJkN2FiYWI1Y2Q0IiwidGFibGVfbmFtZSI6Im1lbV85MDIyNzE5Zl80ZWI4XzQ3ZGVfYTQxMV80MmQ3YWJhYjVjZDQiLCJjcmVhdGVkX2F0IjoiMjAyNi0wMS0yMVQxNTowMjoxNi45NzM4NTYiLCJleHAiOjQ5MjI1Nzg5MzZ9.djIlY15bLUQfbmpaOVnJUDuE1yERFDXtFr9g3zHpxzg"
+      }
+    }
+  }
+}
