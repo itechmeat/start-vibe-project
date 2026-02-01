@@ -141,7 +141,7 @@ export const agents: Record<AgentType, AgentConfig> = {
     name: 'cline',
     displayName: 'Cline',
     skillsDir: '.cline/skills',
-    agentsDir: '.cline/agents',
+    agentsDir: '.clinerules',
     globalSkillsDir: join(home, '.cline/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.cline'));
@@ -211,7 +211,7 @@ export const agents: Record<AgentType, AgentConfig> = {
     name: 'kilo',
     displayName: 'Kilo Code',
     skillsDir: '.kilocode/skills',
-    agentsDir: '.kilocode/agents',
+    agentsDir: '.kilocode/rules',
     globalSkillsDir: join(home, '.kilocode/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.kilocode'));

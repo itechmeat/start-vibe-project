@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-07-22
+
+### Added
+
+- Git repository initialization with initial commit during project scaffolding
+- OpenSpec CLI (`@fission-ai/openspec@latest`) automatic global installation
+- Dynamic placeholders in templates (`{{skillsDir}}`, `{{aiTool}}`)
+- Mandatory `deps-dev` skill for package version lookup
+
 ## [0.5.0] - 2026-01-30
 
 ### Added
@@ -91,6 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-agent support and skill installation
 - Project documentation templates
 
+[0.6.0]: https://github.com/itechmeat/start-vibe-project/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/itechmeat/start-vibe-project/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/itechmeat/start-vibe-project/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/itechmeat/start-vibe-project/compare/v0.2.0...v0.3.0

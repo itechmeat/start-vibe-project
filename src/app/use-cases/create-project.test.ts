@@ -6,7 +6,9 @@ import type {
   FileSystemPort,
   LoggerPort,
   ProgressTrackerPort,
+  ShellPort,
   SkillInstallerPort,
+  SpinnerPort,
   TemplateLoaderPort,
 } from '../ports/index.js';
 import {
@@ -53,9 +55,20 @@ const createMockSkillInstaller = (): SkillInstallerPort => ({
   installSkills: vi.fn().mockResolvedValue(ok(undefined)),
 });
 
+const createMockShell = (): ShellPort => ({
+  runCommand: vi.fn().mockResolvedValue(ok({ stdout: '', stderr: '' })),
+});
+
 const createMockTemplateLoader = (): TemplateLoaderPort => ({
   loadTemplate: vi.fn().mockResolvedValue(ok('template content')),
   loadFileAsset: vi.fn().mockResolvedValue(ok('asset content')),
+});
+
+const createMockSpinner = (): SpinnerPort => ({
+  start: vi.fn().mockReturnValue({
+    update: vi.fn(),
+    stop: vi.fn(),
+  }),
 });
 
 describe('createProjectUseCase', () => {
@@ -91,9 +104,11 @@ describe('createProjectUseCase', () => {
     deps = {
       fs: createMockFs(),
       templateLoader: createMockTemplateLoader(),
+      shell: createMockShell(),
       logger: createMockLogger(),
       progressTracker: createMockProgressTracker(),
       skillInstaller: createMockSkillInstaller(),
+      spinner: createMockSpinner(),
     };
   });
 

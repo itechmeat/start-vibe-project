@@ -137,10 +137,6 @@ export class SkillInstallerAdapter implements SkillInstallerPort {
         );
       }
 
-      const finalizeSpinner = this.spinner.start('Finalizing installation...');
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      finalizeSpinner.stop('✓ Finalizing installation.');
-
       await this.verifySkillChecksums(targetDir, config.aiTool);
 
       return ok(undefined);

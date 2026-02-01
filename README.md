@@ -97,7 +97,7 @@ The following skills are automatically installed:
 
 ## Install first
 
-- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** (*required*) — a spec-driven layer for AI development; global install: `npm install -g @fission-ai/openspec@latest`
+- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** (*auto-installed*) — a spec-driven layer for AI development; installed automatically by CLI, or manual install: `npm install -g @fission-ai/openspec@latest`
 - **[Relief Pilot](https://marketplace.visualstudio.com/items?itemName=ivan-mezentsev.reliefpilot)** (*conditional*) — install only if you selected Relief Pilot during setup; configure it per the extension page instructions.
 - **[SimpleMem](https://github.com/aiming-lab/SimpleMem)** (*recommended*) — long-term memory for working with AI across sessions; recommended to use it via [MCP](https://mcp.simplemem.cloud/).
 

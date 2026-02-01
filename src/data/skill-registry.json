@@ -4,13 +4,14 @@
       "id": "https://github.com/itechmeat/llm-code",
       "label": "itechmeat/llm-code",
       "skills": [
-        { "name": "commits", "tags": ["common", "workflow"] },
-        { "name": "skill-master", "tags": ["common", "skills"] },
-        { "name": "coderabbit", "tags": ["common", "review"] },
-        { "name": "changelog", "tags": ["common", "release"] },
-        { "name": "openspec", "tags": ["common", "planning"] },
-        { "name": "social-writer", "tags": ["common", "content"] },
-        { "name": "project-creator", "tags": ["common", "docs"] },
+        { "name": "commits", "tags": ["common"] },
+        { "name": "skill-master", "tags": ["common"] },
+        { "name": "coderabbit", "tags": ["common"] },
+        { "name": "changelog", "tags": ["common"] },
+        { "name": "deps-dev", "tags": ["common"] },
+        { "name": "openspec", "tags": ["common"] },
+        { "name": "social-writer", "tags": ["common"] },
+        { "name": "project-creator", "tags": ["common"] },
         { "name": "vite", "tags": ["react", "vue"] },
         { "name": "vitest", "tags": ["frontend", "qa"] },
         { "name": "react-testing-library", "tags": ["react", "qa"] },
@@ -57,6 +58,11 @@
       "skills": [{ "name": "pnpm", "tags": ["frontend"] }, { "name": "nuxt", "tags": ["nuxt"] }]
     },
     {
+      "id": "https://github.com/imxv/preety-mermaid-skills",
+      "label": "imxv/preety-mermaid-skills",
+      "skills": [{ "name": "pretty-mermaid", "tags": ["common"] }]
+    },
+    {
       "id": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
       "label": "nextlevelbuilder/ui-ux-pro-max-skill",
       "skills": [{ "name": "ui-ux-pro-max", "tags": ["design", "frontend"] }]
@@ -77,6 +83,18 @@
       "skills": [
         { "name": "typescript-advanced-types", "tags": ["frontend"] },
         { "name": "architecture-patterns", "tags": ["backend"] }
+      ]
+    },
+    {
+      "id": "https://github.com/alirezarezvani/claude-skills",
+      "label": "alirezarezvani/claude-skills",
+      "skills": [
+        { "name": "tech-stack-evaluator", "tags": ["common"] },
+        { "name": "senior-architect", "tags": ["common"] },
+        { "name": "senior-qa", "tags": ["common"] },
+        { "name": "code-reviewer", "tags": ["common"] },
+        { "name": "ui-design-system", "tags": ["frontend"] },
+        { "name": "ux-researcher-designer", "tags": ["frontend"] }
       ]
     },
     {
