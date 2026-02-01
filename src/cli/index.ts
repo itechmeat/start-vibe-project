@@ -38,7 +38,7 @@ export async function runCli(): Promise<void> {
     .argument('[project-name]', 'Project name (lowercase, no spaces)')
     .action(async (projectNameArg?: string) => {
       try {
-        showIntro();
+        showIntro(version);
 
         // Collect all inputs
         const projectName = await askProjectName(projectNameArg);
@@ -168,9 +168,11 @@ export async function runCli(): Promise<void> {
           {
             fs: deps.fs,
             templateLoader: deps.templateLoader,
+            shell: deps.shell,
             logger: deps.logger,
             progressTracker,
             skillInstaller: deps.skillInstaller,
+            spinner: deps.spinner,
           }
         );
 

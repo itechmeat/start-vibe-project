@@ -7,7 +7,9 @@ import type {
   FileSystemPort,
   LoggerPort,
   ProgressTrackerPort,
+  ShellPort,
   SkillInstallerPort,
+  SpinnerPort,
   TemplateLoaderPort,
 } from '../ports/index.js';
 
@@ -21,9 +23,11 @@ export interface CreateProjectInput {
 export interface CreateProjectDeps {
   fs: FileSystemPort;
   templateLoader: TemplateLoaderPort;
+  shell: ShellPort;
   logger: LoggerPort;
   progressTracker: ProgressTrackerPort;
   skillInstaller: SkillInstallerPort;
+  spinner: SpinnerPort;
 }
 
 async function handleFsResult<T, E extends { message: string }>(
@@ -44,7 +48,7 @@ export async function createProjectUseCase(
   deps: CreateProjectDeps
 ): Promise<Result<void, InternalError>> {
   const { config, targetDir, agentSkillsDir, agentAgentsDir } = input;
-  const { fs, templateLoader, logger, progressTracker, skillInstaller } = deps;
+  const { fs, templateLoader, shell, logger, progressTracker, skillInstaller, spinner } = deps;
 
   try {
     logger.info('Starting project creation', { projectName: config.name });
@@ -82,8 +86,15 @@ export async function createProjectUseCase(
 
     await progressTracker.recordStep('write-project-files');
 
+    const initTemplateResult = await templateLoader.loadTemplate('plans/init.md');
+    if (!initTemplateResult.ok) {
+      return err(
+        new InternalError(`Failed to load INIT.md template: ${initTemplateResult.error.message}`)
+      );
+    }
+    const initContent = processInitTemplate(initTemplateResult.value, config, agentSkillsDir);
     const initResult = await handleFsResult(
-      await fs.writeFile(join(targetDir, '.project', 'INIT.md'), generateInitMd(config)),
+      await fs.writeFile(join(targetDir, '.project', 'INIT.md'), initContent),
       'Write INIT.md',
       logger
     );
@@ -158,6 +169,11 @@ export async function createProjectUseCase(
       );
     }
     let creatorAgentContent = creatorAgentResult.value;
+
+    // Replace placeholders in creator agent
+    creatorAgentContent = creatorAgentContent.replaceAll('{{aiTool}}', config.aiTool);
+    creatorAgentContent = creatorAgentContent.replaceAll('{{skillsDir}}', agentSkillsDir);
+
     if (config.useReliefPilot) {
       const creatorToolsResult = await templateLoader.loadTemplate('agents/creator-tools.md');
       if (creatorToolsResult.ok) {
@@ -263,6 +279,53 @@ export async function createProjectUseCase(
 
     await progressTracker.recordStep('install-skills-complete');
 
+    // Start finalize spinner before final operations
+    const finalizeSpinner = spinner.start('Finalizing installation...');
+
+    // Install or update OpenSpec globally
+    await progressTracker.recordStep('install-openspec');
+    const openspecInstallResult = await shell.runCommand(
+      'npm',
+      ['install', '-g', '@fission-ai/openspec@latest'],
+      targetDir,
+      { timeout: 120000 } // 2 minutes timeout for npm install
+    );
+    if (!openspecInstallResult.ok) {
+      logger.warn('Failed to install/update OpenSpec globally', {
+        error: openspecInstallResult.error.message,
+      });
+    }
+
+    // Initialize git repository as the final step
+    await progressTracker.recordStep('git-init');
+    const gitInitResult = await shell.runCommand('git', ['init'], targetDir);
+    if (!gitInitResult.ok) {
+      logger.warn('Failed to initialize git repository', { error: gitInitResult.error.message });
+      // Not a fatal error - user can initialize git manually
+    } else {
+      // Add all files and create initial commit
+      await progressTracker.recordStep('git-initial-commit');
+      const gitAddResult = await shell.runCommand('git', ['add', '.'], targetDir);
+      if (gitAddResult.ok) {
+        const commitMessage = 'chore(init): scaffold project with start-vibe-project CLI';
+        const gitCommitResult = await shell.runCommand(
+          'git',
+          ['commit', '-m', commitMessage],
+          targetDir
+        );
+        if (!gitCommitResult.ok) {
+          logger.warn('Failed to create initial commit', {
+            error: gitCommitResult.error.message,
+          });
+        }
+      } else {
+        logger.warn('Failed to stage files for commit', { error: gitAddResult.error.message });
+      }
+    }
+
+    // Stop finalize spinner after all operations complete
+    finalizeSpinner.stop('✓ Finalizing installation.');
+
     await progressTracker.markCompleted();
     logger.info('Project creation completed', { projectName: config.name });
 
@@ -275,28 +338,45 @@ export async function createProjectUseCase(
   }
 }
 
-function generateInitMd(config: ProjectConfig): string {
-  const date = new Date().toISOString().split('T')[0];
-  return `# Project Initialization Checklist
+function processInitTemplate(template: string, config: ProjectConfig, skillsDir: string): string {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const date = dateStr ?? new Date().toISOString().slice(0, 10);
 
-**Project**: ${config.name}
-**Created**: ${date}
-**Template**: ${config.template}
+  // Generate priority skill list commands
+  const prioritySkillList = `  \`\`\`bash
+  npx skills add itechmeat/llm-code --list
+  npx skills add ancoleman/ai-design-components/skills --list
+  \`\`\``;
 
-## Setup Tasks
+  // Generate OpenSpec command based on AI tool
+  const opsxFFCommand =
+    config.aiTool === 'opencode'
+      ? '/opsx:ff story-1-project-setup'
+      : config.aiTool === 'claude-code'
+        ? '/opsx:ff story-1-project-setup'
+        : '/opsx:ff story-1-project-setup';
 
-- [ ] Review and update about.md
-- [ ] Define technical specifications in specs.md
-- [ ] Document system architecture in architecture.md
-- [ ] Create user stories in stories/
-
-## Components
-
-- Frontend: ${config.components.frontend ? 'Yes' : 'No'} ${config.frontendStack ? `(${config.frontendStack})` : ''}
-- Backend: ${config.components.backend ? 'Yes' : 'No'} ${config.backendStack ? `(${config.backendStack})` : ''}
-- Database: ${config.components.database ? 'Yes' : 'No'} ${config.databaseStack ? `(${config.databaseStack})` : ''}
-- Authentication: ${config.components.auth ? 'Yes' : 'No'}
-`;
+  return template
+    .replaceAll('{{aiTool}}', config.aiTool)
+    .replaceAll('{{skillsDir}}', skillsDir)
+    .replaceAll('{{name}}', config.name)
+    .replaceAll('{{templateName}}', config.template)
+    .replaceAll('{{createdDate}}', date)
+    .replaceAll('{{prioritySkillList}}', prioritySkillList)
+    .replaceAll('{{opsxFFCommand}}', opsxFFCommand)
+    .replaceAll(
+      '{{frontendComponent}}',
+      config.components.frontend ? `Yes (${config.frontendStack || 'TBD'})` : 'No'
+    )
+    .replaceAll(
+      '{{backendComponent}}',
+      config.components.backend ? `Yes (${config.backendStack || 'TBD'})` : 'No'
+    )
+    .replaceAll(
+      '{{databaseComponent}}',
+      config.components.database ? `Yes (${config.databaseStack || 'TBD'})` : 'No'
+    )
+    .replaceAll('{{authComponent}}', config.components.auth ? 'Yes' : 'No');
 }
 
 function generateAboutMd(config: ProjectConfig): string {

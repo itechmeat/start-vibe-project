@@ -1,6 +1,6 @@
 {
   "name": "start-vibe-project",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "Initialize a new project with AI-first documentation structure",
   "type": "module",
   "author": "itechmeat",

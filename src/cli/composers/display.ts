@@ -112,11 +112,34 @@ export function showSuccessMessage(projectName: string, agentName: string): void
 }
 
 /**
- * Display CLI intro banner
+ * Display CLI intro banner with ASCII art
  */
-export function showIntro(): void {
+export function showIntro(version?: string): void {
+  const banner = `
+██╗   ██╗██╗██████╗ ███████╗
+██║   ██║██║██╔══██╗██╔════╝
+╚██╗ ██╔╝██║██████╔╝█████╗
+ ╚████╔╝ ██║██╔══██╗██╔══╝
+  ╚██╔╝  ██║██████╔╝███████╗
+   ╚═╝   ╚═╝╚═════╝ ╚══════╝
+   Start Project${version ? ` v${version}` : ''}
+`;
+
+  if (process.stdout.isTTY) {
+    const gradientBanner = applyHorizontalGradient(
+      banner,
+      { r: 79, g: 70, b: 229 },
+      { r: 34, g: 211, b: 238 },
+      { boldLines: new Set(['Start Project', `Start Project v${version}`]) }
+    );
+    console.log(gradientBanner);
+  } else {
+    console.log(`Start Vibe Project${version ? ` v${version}` : ''}`);
+  }
+
   console.log();
-  p.intro(chalk.bgCyan.black(' start-vibe-project '));
+  const title = version ? ` start-vibe-project v${version} ` : ' start-vibe-project ';
+  p.intro(chalk.bgCyan.black(title));
 }
 
 /**
