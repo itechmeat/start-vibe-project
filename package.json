@@ -51,12 +51,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^25.0.10",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "vitest": "^4.0.18",
     "@biomejs/biome": "^2.3.13",
-    "typedoc": "^0.28.16"
+    "@types/node": "^25.0.10",
+    "@vitest/coverage-v8": "^4.0.18",
+    "tsup": "^8.3.5",
+    "typedoc": "^0.28.16",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=18"
