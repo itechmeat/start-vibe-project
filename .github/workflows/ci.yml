@@ -1,10 +1,17 @@
 name: CI
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   quality:
@@ -26,6 +33,17 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Restore Bun cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ matrix.node-version }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-${{ matrix.node-version }}-
+            ${{ runner.os }}-bun-
+
       - name: Install dependencies
         run: bun install
 
@@ -35,7 +53,11 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Test
+        run: bun run test
+
       - name: Test with coverage
+        if: matrix.node-version == 20
         run: bun run test --coverage
 
       - name: Build
