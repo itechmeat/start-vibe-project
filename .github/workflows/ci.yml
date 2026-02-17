@@ -35,7 +35,11 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Test
+        run: bun run test
+
       - name: Test with coverage
+        if: matrix.node-version == 20
         run: bun run test --coverage
 
       - name: Build
