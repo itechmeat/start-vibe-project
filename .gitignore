@@ -20,9 +20,6 @@ dist/
 .agents/
 .claude/
 .github/agents/
-.github/skills/
-.github/instructions/
-.github/copilot-instructions.md
 !files/.github/
 
 # Logs

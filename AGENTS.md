@@ -29,6 +29,42 @@ mcp_simplemem_memory_stats    — check status
 <!-- SIMPLEMEM:END -->
 
 <!-- CUSTOM:START -->
-Do this after every code change:
-`bun run typecheck && bun run lint && bun run build && bun link`
+## 1. Build & Verify
+
+After every code change:
+```bash
+bun run typecheck && bun run lint && bun run build && bun link
+```
+
+## 2. Timeouts
+
+- **ALWAYS** specify `timeout` for `execute_command` (e.g., 30000ms)
+- Set timeouts for HTTP requests (e.g., `httpx.AsyncClient(timeout=10.0)`)
+- Max single wait: 5 minutes; may extend by another 5 min if still running
+- Max total duration: 30 minutes
+
+## 3. Git Safety
+
+**FORBIDDEN** (modifies repo/history):
+- `git commit`, `push`, `reset`, `rebase`, `merge`, `cherry-pick`, `revert`, `checkout`, `switch`, `pull`, `fetch --prune`, `clean`
+
+**ALLOWED** (read-only):
+- `git status`, `diff`, `log`, `show`, `blame`, `grep`
+
+**File deletion**: use `trash` instead of `rm -rf`
+
+## 4. Code Quality
+
+**PROHIBITED**:
+- Silent fallbacks (`or "default"`, `get() or fallback`)
+- Mock/stub implementations
+- Hardcoded credentials or API keys
+- Generic error messages
+- Bare `except:` clauses
+
+**REQUIRED**:
+- Explicit error handling (fail fast)
+- Real implementations only
+- `TODO`/`FIXME` comments for unimplemented features
+- ENV variables for configuration
 <!-- CUSTOM:END -->

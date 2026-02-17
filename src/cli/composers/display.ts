@@ -153,4 +153,6 @@ export function showOutro(): void {
     { boldLines: new Set(['Happy coding! 🚀']) }
   );
   p.outro(happyMessage);
+
+  console.log(chalk.blue('⭐️ Star this repository if you found this helpful'));
 }
