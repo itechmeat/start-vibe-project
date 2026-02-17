@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/0e654592-78e4-47b3-b6a8-1b794720e051
 **Using bun (recommended)**
 
 ```bash
-bunx start-vibe-project
+bunx start-vibe-project@latest
 ```
 
 **Using npm/npx**
@@ -59,7 +59,7 @@ my-project/
 
 ## Workflow
 
-1. **Run the CLI**: `bunx start-vibe-project` (or `npx start-vibe-project`)
+1. **Run the CLI**: `bunx start-vibe-project@latest` (or `npx start-vibe-project@latest`)
 2. **Answer prompts**: Name, template, description, components, stack, AI tool
 3. **Open in your AI tool**: VS Code with Copilot, Claude Code, Cursor, etc.
 4. **Select `creator` agent**: The agent will continue project documentation
