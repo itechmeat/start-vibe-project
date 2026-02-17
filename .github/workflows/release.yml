@@ -9,9 +9,8 @@ concurrency:
   cancel-in-progress: false
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 jobs:
   publish:
@@ -19,6 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -44,10 +46,23 @@ jobs:
 
       - name: Validate tag matches package version
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Release tag must be semver-like (vX.Y.Z). Got: $TAG_NAME"
+            exit 1
+          fi
+          TAG_VERSION="${TAG_NAME#v}"
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
             echo "Tag version ($TAG_VERSION) does not match package.json version ($PACKAGE_VERSION)"
+            exit 1
+          fi
+
+      - name: Validate tag commit is in master
+        run: |
+          git fetch origin master
+          if ! git merge-base --is-ancestor "HEAD" "origin/master"; then
+            echo "Tag commit is not contained in origin/master. Refusing publish."
             exit 1
           fi
 
